@@ -110,5 +110,5 @@ void MainWindow::loadTrainingPoints
 
 void MainWindow::openFile()
 {
-    QFileDialog
+	QString fileName = QFileDialog::getOpenFileName(this);
 }
