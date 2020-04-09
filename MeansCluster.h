@@ -8,6 +8,8 @@
 
 #include <QDebug>
 
+#include <cmath>
+
 const double kConvergenceThreshold = 0.00001;
 
 template <typename T>

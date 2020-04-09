@@ -8,6 +8,8 @@
 #include <QFileDialog>
 #include <QPointF>
 
+#include <cmath>
+
 MainWindow::MainWindow
 (
     QWidget* parent

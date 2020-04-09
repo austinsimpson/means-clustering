@@ -156,8 +156,6 @@ void MeansClusterWidget::paintEvent
 
         classification++;
     }
-
-    image.save(QString("C:/Users/Austin/Desktop/capture/img_%1.png").arg(QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss_zzz")), nullptr, 100);
     painter.end();
 }
 
