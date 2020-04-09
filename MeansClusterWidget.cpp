@@ -1,7 +1,8 @@
 #include "MeansClusterWidget.h"
 
+#include <QImage>
 #include <QPainter>
-
+#include <QDateTime>
 #include <math.h>
 
 MeansClusterWidget::MeansClusterWidget
@@ -96,6 +97,7 @@ void MeansClusterWidget::paintEvent
     Q_UNUSED(event)
 
     QPainter painter;
+    painter.setRenderHint(QPainter::RenderHint::HighQualityAntialiasing);
     painter.begin(this);
     
     float xRange = _xMax - _xMin;
@@ -111,12 +113,12 @@ void MeansClusterWidget::paintEvent
     QTransform scaleTransform;
     float max = xRange > yRange ? xRange : yRange;
     scaleTransform.scale(1.0 / xRange, 1.0 / yRange);
-    
-    float min = width() < height() ? width() : height();
+
+    int min = width() < height() ? width() : height();
     scaleTransform.scale(min, min);
 
     _painterTransform = toOriginTransform * scaleTransform * reflectTransform;
-    painter.fillRect(_painterTransform.mapRect(QRectF(_xMin, _yMin, xRange, yRange)), Qt::black);
+    painter.fillRect(0, 0, width(), height(), Qt::black);
 
     painter.setPen(Qt::black);
     painter.drawEllipse(_painterTransform.map(QPointF(0.0, 0.0)), 3.0, 3.0);
@@ -129,6 +131,7 @@ void MeansClusterWidget::paintEvent
         unsigned int clusterIndex = (*classification).first;
         QPen pen = painter.pen();
         pen.setColor(clusterColors[clusterIndex]);
+        pen.setWidth(2);
         painter.setPen(pen);
         painter.setBrush(QColor(0, 0, 0, 0));
 
@@ -154,7 +157,7 @@ void MeansClusterWidget::paintEvent
         classification++;
     }
 
-
+    image.save(QString("C:/Users/Austin/Desktop/capture/img_%1.png").arg(QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss_zzz")), nullptr, 100);
     painter.end();
 }
 
