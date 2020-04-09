@@ -168,15 +168,35 @@ private:
     {
         srand(time(nullptr));
         QVector<T> centroids;
-        QVector<unsigned int> usedIndices;
-        while (usedIndices.count() < _numberOfClusters)
+        QVector<T> dataPoints = _dataPoints;
+
+        if (dataPoints.count() > 0)
         {
-             unsigned int potentialIndex = rand() % _dataPoints.count();
-             if (usedIndices.contains(potentialIndex) == false)
-             {
-                 usedIndices.push_back(potentialIndex);
-                 centroids.push_back(_dataPoints[potentialIndex]);
-             }
+            unsigned int potentialIndex = rand() % _dataPoints.count();
+            centroids.push_back(_dataPoints[potentialIndex]);
+            dataPoints.remove(potentialIndex);
+        }
+        while (centroids.count() < _numberOfClusters)
+        {
+            qreal previousMax = std::numeric_limits<qreal>::min();
+
+            unsigned int maximalPointIndex;
+            for (int pointIndex = 0; pointIndex < dataPoints.count(); ++pointIndex)
+            {
+                const auto& point = dataPoints[pointIndex];
+                qreal cumulativeSquaredDistance = 0.0;
+                for (const auto& centroid : centroids)
+                {
+                    cumulativeSquaredDistance += _distanceFunction(point, centroid);
+                }
+                if (previousMax < cumulativeSquaredDistance)
+                {
+                    previousMax = cumulativeSquaredDistance;
+                    maximalPointIndex = pointIndex;
+                }
+            }
+            centroids.push_back(dataPoints[maximalPointIndex]);
+            dataPoints.remove(maximalPointIndex);
         }
         return centroids;
     }
@@ -186,17 +206,11 @@ private:
         QMap<unsigned int, QVector<unsigned int>>::const_key_value_iterator category = classifications.constKeyValueBegin();
         while (category != classifications.constKeyValueEnd())
         {
-            qDebug() << "Category index: " << (*category).first;
-
             QVector<unsigned int>::const_iterator categoryPointIndex = (*category).second.cbegin();
             while (categoryPointIndex != (*category).second.end())
             {
-                qDebug() << "\t" << _dataPoints[*categoryPointIndex];
                 categoryPointIndex++;
             }
-
-
-            qDebug() << "\n";
             category++;
         }
     }

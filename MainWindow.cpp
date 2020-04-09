@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-#include "ui_MainWindow.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -20,15 +19,6 @@ MainWindow::MainWindow
 
     loadTrainingPoints(":/data/test_data_1.csv");
     _clusterWidget->setPoints(normalizeData(_trainingPoints));
-    _cluster.setDistanceFunction([](const QPointF& first, const QPointF& second)
-    {
-        float xDifference = first.x() - second.x();
-        float yDifference = first.y() - second.y();
-        return xDifference * xDifference + yDifference * yDifference;
-    });
-     
-    _cluster.setPoints(normalizeData(_trainingPoints));
-    _cluster.learn();
 }
 
 MainWindow::~MainWindow()
@@ -111,4 +101,9 @@ void MainWindow::loadTrainingPoints
 void MainWindow::openFile()
 {
 	QString fileName = QFileDialog::getOpenFileName(this);
+    if (fileName.isNull() == false)
+    {
+        loadTrainingPoints(fileName);
+        _clusterWidget->setPoints(normalizeData(_trainingPoints));
+    }
 }
